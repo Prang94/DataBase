@@ -1,0 +1,366 @@
+CREATE TABLE Teachers (
+
+ID int IDENTITY (1,1) NOT NULL PRIMARY KEY,
+Name nvarchar(100) NOT NULL CHECK (Name != ' '),
+Surname nvarchar(MAX) NOT NULL CHECK (Surname != ' ')
+
+)
+
+CREATE TABLE Assistants (
+
+ID int IDENTITY (1,1) NOT NULL PRIMARY KEY,
+TeacherID int NOT NULL FOREIGN KEY (TeacherID) REFERENCES Teachers(ID)
+
+)
+
+CREATE TABLE Curators (
+
+ID int IDENTITY (1,1) NOT NULL PRIMARY KEY,
+TeacherID int NOT NULL FOREIGN KEY(TeacherID) REFERENCES Teachers(ID)
+
+)
+
+CREATE TABLE Deans (
+
+ID int IDENTITY (1,1) NOT NULL PRIMARY KEY,
+TeacherID int NOT NULL FOREIGN KEY(TeacherID) REFERENCES Teachers(ID)
+
+)
+
+CREATE TABLE Faculties (
+
+ID int IDENTITY (1,1) NOT NULL PRIMARY KEY,
+Building int NOT NULL CHECK (Building > 0 AND Building < 6),
+Name nvarchar(100) NOT NULL UNIQUE CHECK (Name != ' '),
+DeanID int NOT NULL FOREIGN KEY(DeanID) REFERENCES Deans(ID)
+
+)
+
+CREATE TABLE Heads (
+
+ID int IDENTITY (1,1) NOT NULL PRIMARY KEY,
+TeacherID int NOT NULL FOREIGN KEY(TeacherID) REFERENCES Teachers(ID)
+
+)
+
+CREATE TABLE Departments (
+
+ID int IDENTITY (1,1) NOT NULL PRIMARY KEY,
+Building int NOT NULL CHECK (Building > 0 AND Building < 6), 
+Name nvarchar(100) NOT NULL UNIQUE CHECK (Name != ' '),
+FacultyID int NOT NULL FOREIGN KEY(FacultyID) REFERENCES Faculties(ID), 
+HeadID int NOT NULL FOREIGN KEY(HeadID) REFERENCES Heads(ID)
+
+)
+
+
+CREATE TABLE Groups (
+
+ID int IDENTITY (1,1) NOT NULL PRIMARY KEY,
+Name nvarchar(10) NOT NULL UNIQUE CHECK (Name != ' '),
+Year int NOT NULL CHECK (Year > 0 AND Year < 6),
+DepartmentID int NOT NULL FOREIGN KEY(DepartmentID) REFERENCES Departments(ID)
+
+)
+
+CREATE TABLE GroupsCurators (
+
+ID int IDENTITY (1,1) NOT NULL PRIMARY KEY,
+CuratorID int NOT NULL FOREIGN KEY(CuratorID) REFERENCES Curators(ID),
+GroupID int NOT NULL FOREIGN KEY(GroupID) REFERENCES Groups(ID)
+
+)
+
+CREATE TABLE Subjects (
+
+ID int IDENTITY (1,1) NOT NULL PRIMARY KEY,
+Name nvarchar(100) NOT NULL UNIQUE CHECK (Name != ' ')
+
+)
+
+CREATE TABLE Lectures (
+
+ID int IDENTITY (1,1) NOT NULL PRIMARY KEY,
+SubjectID int NOT NULL FOREIGN KEY(SubjectID) REFERENCES Subjects(ID),
+TeacherID int NOT NULL FOREIGN KEY(TeacherID) REFERENCES Teachers(ID)
+
+)
+
+
+CREATE TABLE GroupsLectures (
+
+ID int IDENTITY (1,1) NOT NULL PRIMARY KEY, 
+GroupID int NOT NULL FOREIGN KEY(GroupID) REFERENCES Groups(ID),
+LectureID int NOT NULL FOREIGN KEY(LectureID) REFERENCES Lectures(ID)
+
+)
+
+CREATE TABLE LectureRooms (
+
+ID int IDENTITY (1,1) NOT NULL PRIMARY KEY,
+Building int NOT NULL CHECK (Building > 0 AND Building < 6),
+Name nvarchar(10) NOT NULL UNIQUE CHECK (Name != ' ')
+
+)
+
+
+CREATE TABLE Schedules (
+
+ID int IDENTITY (1,1) NOT NULL PRIMARY KEY,
+Class int NOT NULL CHECK (Class > 0 AND Class < 9),
+DayOfWeek int NOT NULL CHECK (DayOfWeek > 0 And DayOfWeek < 8),
+Week int NOT NULL CHECK (Week > 0 AND Week < 53), 
+LectureID int NOT NULL FOREIGN KEY(LectureID) REFERENCES Lectures(ID),
+LectureRoomID int NOT NULL FOREIGN KEY(LectureRoomID) REFERENCES LectureRooms(ID)
+
+)
+
+
+INSERT INTO Teachers(Name, Surname)
+VALUES
+
+('Dmitry', 'Kellerman'),
+('Kristina', 'Akhmadova'),
+('Olga', 'Mikhaylova'),
+('Alexandr', 'Yakobson'),
+('Alexandr', 'Kovalenko'),
+('Konstantin', 'Shumakov'),
+('Natalya', 'Dancheva')
+
+INSERT INTO Subjects (Name)
+
+VALUES
+
+('Biology'),
+('History'),
+('Maths'),
+('Infomaths'),
+('Chemistry'),
+('Physics'),
+('Music'),
+('Geography'),
+('Russian'),
+('English'),
+('Spanish'),
+('Deutch')
+
+INSERT INTO Deans(TeacherID)
+
+VALUES
+
+(1), (2), (3), (4), (5), (6), (7)
+
+
+
+INSERT INTO Faculties(Building, Name, DeanID)
+
+VALUES
+
+(4, 'Maths_Faculty', 1), 
+(5, 'Natural Faculty', 2),
+(2, 'Physical Faculty', 3),
+(1, 'Medical Faculty', 4), 
+(3, 'Programming Faculty', 5),
+(2, 'Historical Faculty', 6),
+(4, 'Musician Faculty', 7)
+
+
+INSERT INTO Assistants (TeacherID)
+
+VALUES
+
+(1), (2), (3), (4), (5), (6), (7)
+
+
+INSERT INTO Curators (TeacherID)
+
+VALUES
+
+(1), (2), (3), (4), (5), (6), (7)
+
+
+INSERT INTO Heads (TeacherID)
+
+VALUES
+
+(1), (2), (3), (4), (5), (6), (7)
+
+
+INSERT INTO Departments (Building, Name, FacultyID, HeadID)
+
+VALUES
+
+(2, 'Software Department', 4, 1), 
+(1, 'Musician Department', 5, 2), 
+(4, 'Historical Department', 6, 3), 
+(3, 'Medical Department', 7, 4), 
+(5, 'Maths Department', 8, 5), 
+(3, 'Language Department', 9, 6),
+(1, 'Physical Department', 10, 7)
+
+
+INSERT INTO Groups (Name, Year, DepartmentID)
+
+VALUES
+
+('BV211', 2, 14),
+('BV212', 2, 15),
+('AV112', 1, 16),
+('CB314', 3, 17),
+('AB111', 1, 18), 
+('CV322', 3, 19),
+('DV415', 4, 20)
+
+
+INSERT INTO Lectures (SubjectID, TeacherID)
+
+VALUES
+
+(5, 1), (12, 2), (10, 3), (8, 4), (2, 5), (4, 6), (3, 7)
+
+
+INSERT INTO LectureRooms (Building, Name)
+
+VALUES
+
+(4, 202), (1, 101), (3, 314), (2, 241), (5, 505), (4, 412), (2, 234), (3, 425)
+
+
+INSERT INTO GroupsCurators (CuratorID, GroupID)
+
+VALUES
+
+(1,2), (2,3), (3,4), (4,5), (5,6), (6,7), (7,8)
+
+
+
+INSERT INTO GroupsLectures (GroupID, LectureID)
+
+VALUES
+
+(2,1), (3,2), (4,3), (5,4), (6,5), (7,6), (8,7)
+
+
+INSERT INTO Schedules (Class, DayOfWeek, Week, LectureID, LectureRoomID)
+
+VALUES
+
+(2, 5, 12, 1, 1), 
+(1, 2, 34, 2, 2),
+(5, 1, 24, 3, 3),
+(5, 4, 22, 4, 4), 
+(4, 3, 18, 5, 5), 
+(6, 6, 19, 6, 6), 
+(7, 1, 15, 7, 7)
+
+
+
+
+1) 
+
+SELECT Num_Auditory.Name AS Num_Auditory
+
+FROM Teachers
+
+JOIN Lectures ON Lectures.TeacherID = Teachers.ID
+JOIN Schedules AS Num_Lection ON Num_Lection.LectureID = Lectures.TeacherID
+JOIN LectureRooms AS Num_Auditory ON Num_Auditory.ID = Num_Lection.LectureID
+
+WHERE Teachers.Name = 'Edward' AND Surname = 'Hopper'
+
+2) 
+
+SELECT Surname 
+
+FROM Teachers
+
+JOIN Assistants ON Assistants.TeacherID = Teachers.ID
+JOIN Lectures ON Lectures.TeacherID = Teachers.ID
+JOIN GroupsLectures ON GroupsLectures.LectureID = Lectures.ID
+JOIN Groups ON Groups.ID = GroupsLectures.GroupID
+
+WHERE Groups.Name = 'F505'
+
+3) 
+
+SELECT Subjects.Name AS Subject_Name 
+
+FROM Subjects
+
+JOIN Lectures ON Lectures.ID = Subjects.ID
+JOIN Teachers ON Teachers.ID = Lectures.TeacherID
+JOIN GroupsLectures ON GroupsLectures.LectureID = Lectures.ID
+JOIN Groups ON Groups.ID = GroupsLectures.GroupID
+
+WHERE Groups.Year = 5 AND (Teachers.Name = 'Alex' AND Teachers.Surname = 'Carmack')
+
+
+4) 
+
+SELECT Surname 
+
+FROM Teachers
+
+JOIN Lectures ON Lectures.ID = Teachers.ID
+JOIN Schedules ON Schedules.LectureID = Lectures.ID
+
+WHERE Schedules.DayOfWeek != 1
+
+5) 
+
+SELECT Building, LectureRooms.Name
+
+FROM LectureRooms
+
+JOIN Schedules ON Schedules.LectureRoomID = LectureRooms.ID
+JOIN Lectures ON Lectures.ID = Schedules.LectureID
+
+WHERE (DayOfWeek != 3 OR Week != 2) AND Class != 3
+
+6) 
+
+SELECT CONCAT(Teachers.Name, ' ', Teachers.Surname) AS FIO FROM Teachers
+
+JOIN Curators ON Curators.TeacherID = Teachers.ID
+JOIN GroupsCurators ON GroupsCurators.CuratorID = Curators.ID
+JOIN Groups ON Groups.ID = GroupsCurators.GroupID
+JOIN Departments ON Departments.ID = Groups.DepartmentID
+JOIN Faculties ON Faculties.ID = Departments.FacultyID
+
+WHERE Faculties.Name = 'Computer Science' AND Departments.Name != 'Software Development'
+
+
+7)
+
+SELECT Faculties.Building AS F_B, Departments.Building AS D_B, LectureRooms.Building AS LR_B FROM Faculties, Departments, LectureRooms
+
+8) 
+
+SELECT CONCAT (Name, ' ', Surname) AS FIO_Deans, CONCAT (Name, ' ', Surname) AS FIO_Teachers,
+	   CONCAT (Name, ' ', Surname) AS FIO_Heads, CONCAT (Name, ' ', Surname) AS FIO_Curators,
+	   CONCAT (Name, ' ', Surname) AS FIO_Assistants
+
+FROM Teachers
+
+JOIN Deans ON Deans.TeacherID = Teachers.ID
+
+JOIN Heads ON Heads.TeacherID = Teachers.ID
+
+JOIN Curators ON Curators.TeacherID = Teachers.ID
+
+JOIN Assistants ON Assistants.TeacherID = Teachers.ID
+
+
+9)
+
+SELECT DISTINCT DayOfWeek 
+
+FROM Schedules
+
+JOIN LectureRooms ON LectureRooms.ID = Schedules.LectureRoomID
+
+WHERE (LectureRooms.Name = 'A311' AND LectureRooms.Name = 'A104') AND LectureRooms.Building = 6
+
+
+
+

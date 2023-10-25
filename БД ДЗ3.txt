@@ -1,0 +1,69 @@
+CREATE TABLE Stuff (
+
+ID int IDENTITY (1,1) NOT NULL PRIMARY KEY,
+First_Name nvarchar(50) NOT NULL CHECK (First_Name != ' '),
+Last_Name nvarchar(50) NOT NULL CHECK (Last_Name != ' '),
+Position nvarchar(50) NOT NULL CHECK (Position != ' '),
+Date_Apply date NOT NULL CHECK (Date_Apply > '2000-12-31')
+
+)
+
+
+INSERT INTO Stuff (First_Name, Last_Name, Position, Date_Apply)
+
+VALUES
+
+('Egor', 'Titov', 'footballer', '2004-12-20'),
+('Alexandr', 'Medvedev', 'president', '2017-11-30'),
+('Sergey', 'Semak', 'manager', '2017-10-20'),
+('Elena', 'Iluhina', 'director', '2018-01-15'),
+('Sebastien', 'Driussi', 'footballer', '2018-09-12'),
+('Mariya', 'Burova', 'fizioterapevt', '2018-10-25')
+
+
+1) 
+
+CREATE PROCEDURE Add_Employee
+
+@f_n nvarchar(50),
+@l_n nvarchar(50),
+@pos nvarchar(50),
+@d_apply date
+
+AS
+
+INSERT INTO Stuff(First_Name, Last_Name, Position, Date_Apply)
+
+VALUES
+
+(@f_n, @l_n, @pos, @d_apply)
+
+------------------------------------------------------------------
+
+2)
+
+CREATE PROCEDURE Update_Info
+
+@id int,
+@pos nvarchar(50)
+
+AS
+
+UPDATE Stuff
+
+SET Position = @pos
+WHERE ID = @id
+
+------------------------------------------------------------------
+
+3)
+
+CREATE PROCEDURE Delete_Emp
+
+@id int
+
+AS
+
+DELETE FROM Stuff
+
+WHERE ID = @id

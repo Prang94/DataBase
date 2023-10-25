@@ -1,0 +1,127 @@
+CREATE TABLE Departments (
+
+ID int IDENTITY (1,1) NOT NULL PRIMARY KEY,
+Financing money NOT NULL DEFAULT 0 CHECK (Financing >= 0), 
+Name nvarchar(100) NOT NULL UNIQUE CHECK (Name != ' '),
+
+)
+
+CREATE TABLE Faculties (
+
+ID int IDENTITY (1,1) NOT NULL PRIMARY KEY, 
+Dean nvarchar(MAX) NOT NULL CHECK (Dean != ' '), 
+Name nvarchar(100) NOT NULL UNIQUE (Name != ' ')
+
+)
+
+CREATE TABLE Groups (
+
+ID int IDENTITY (1,1) NOT NULL PRIMARY KEY,
+Name nvarchar(10) NOT NULL UNIQUE CHECK (Name != ' '), 
+Rating int NOT NULL CHECK (Rating >= 0 And Rating < 6), 
+Year int NOT NULL CHECK (Year > 0 And Year < 6)
+
+)
+
+CREATE TABLE Teachers (
+
+ID int IDENTITY (1,1) NOT NULL PRIMARY KEY, 
+EmploymentDate date NOT NULL CHECK (EmploymentDate >= '1990-01-01'), 
+IsAssistant bit NOT NULL DEFAULT 0,
+IsProfessor bit NOT NULL DEFAULT 0,
+Name nvarchar(MAX) NOT NULL CHECK (Name != ' '), 
+Position nvarchar(MAX) NOT NULL CHECK (Position != ' '), 
+Premium money NOT NULL DEFAULT 0 CHECK (Premium >= 0),
+Salary money NOT NULL CHECK (Salary > 0), 
+Surname nvarchar(MAX) NOT NULL CHECK (Surname != ' ')
+
+)
+
+--заполнение таблиц не буду все писать, для примера 
+
+INSERT INTO Departments (Name, Financing)
+
+VALUES
+
+('Program Engineering', 350000), 
+('Right and History', 225000)
+
+-- etc...
+
+
+1) 
+
+SELECT Name, Financing, ID FROM Departments
+
+2) 
+
+SELECT Groups.Name as GroupName, Groups.Rating as GroupRating FROM Groups
+
+3) 
+
+SELECT Teachers.Surname, 'Percent1 - ', (Salary/Premium) * 100 FROM Teachers --ставка по отношению к надбавке 
+
+SELECT Surname, 'Percent2 - ', (Salary / (Salary + Premium) * 100) FROM Teachers --ставка по отношению к зарплате (ставка + премия)
+
+4) 
+
+SELECT 'The dean of faculty ' + Name + ' is ' + Dean FROM Faculties
+
+5) 
+
+SELECT Surname FROM Teachers
+WHERE IsProfessor = 1 And Salary > 1050
+
+6) 
+
+SELECT Name FROM Departments
+WHERE Financing < 11000 OR Financing > 25000
+
+7) 
+
+SELECT Name FROM Faculties
+WHERE Name != 'Computer Science'
+
+8)
+
+SELECT Surname, Position FROM Teachers
+WHERE isProfessor = 0
+
+9) 
+
+SELECT Surname, Position, Salary, Premium FROM Teachers
+WHERE IsAssistant = 1 And (Premium > 159 And Premium < 551)
+
+10) 
+
+SELECT Surname, Salary FROM Teachers
+WHERE IsAssistant = 1
+
+11) 
+
+SELECT Surname, Position FROM Teachers
+WHERE EmploymentDate < '2006-01-01'
+
+12)
+
+SELECT Name as 'Name of Department' FROM Departments
+WHERE Name < 'Software Development'
+
+13) 
+
+SELECT Surname FROM Teachers
+WHERE IsAssistant = 1 And (Salary + Premium) < 1201
+
+14) 
+
+SELECT Name FROM Groups
+WHERE Year = 5 And (Rating > 1 And Rating < 5)
+
+15) 
+
+
+SELECT Surname FROM Teachers
+WHERE IsAssistant = 1 AND (Salary < 550 OR Premium < 200)
+
+
+
